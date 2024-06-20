@@ -1,0 +1,398 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+}
+
+#background-video {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Menyesuaikan video agar mengisi seluruh area tanpa mengubah proporsi */
+    z-index: -1; /* Menempatkan video di belakang konten lain */
+}
+
+.player-container {
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.9); /* Ubah opacity (RGBA) untuk membuat latar belakang semi-transparan */
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 300px;
+    z-index: 1; /* Menempatkan konten pemutar di depan video */
+}
+
+.album img {
+    width: 100%;
+    height: auto;
+    border-radius: 20px;
+    margin-bottom: 20px;
+}
+
+.controls {
+    position: relative;
+    text-align: center;
+}
+
+.song-info {
+    display: flex;
+    flex-direction: column; /* Mengubah menjadi kolom agar nama artis di bawah judul */
+    align-items: flex-start; /* Menempatkan ke kiri */
+    margin-bottom: 10px; /* Spasi antara judul dan nama artis */
+}
+
+.song-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px; /* Spasi antara judul dan nama artis */
+}
+
+.artist-name {
+    font-size: 14px;
+    color: #666;
+    margin-top: 5px; /* Spasi antara nama artis dan seek bar */
+}
+
+#seek-bar {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 10px;
+    border-radius: 5px;
+    background-color: #ddd;
+    outline: none;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+#seek-bar:hover {
+    opacity: 1;
+}
+
+#seek-bar::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #0e0e0e;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+#seek-bar::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #4caf50;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.duration-and-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+}
+
+#duration {
+    align-self: flex-start; /* Position the duration to the left */
+    margin-bottom: 10px; /* Spasi antara duration dan buttons */
+    font-size: 14px;
+    color: #666;
+}
+
+.buttons {
+    display: flex;
+    gap: 10px;
+}
+
+button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+button:hover {
+    transform: scale(1.1);
+    color: #4caf50;
+}
+
+.add-song-button {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background-color: #4caf50;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.add-song-button:hover {
+    background-color: #45a049;
+}
+
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 3; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0, 0, 0); /* Fallback color */
+    background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+    max-width: 500px; /* Maximum width for the modal */
+    border-radius: 10px;
+}
+
+.close-button {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-content h2 {
+    margin-top: 0;
+}
+
+.modal-content label {
+    display: block;
+    margin: 10px 0 5px;
+}
+
+.modal-content input[type="text"] {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.modal-content button[type="submit"] {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.modal-content button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+ini css
+
+
+
+const playPauseButton = document.getElementById('play-pause');
+const prevButton = document.getElementById('prev');
+const nextButton = document.getElementById('next');
+const seekBar = document.getElementById('seek-bar');
+const durationDisplay = document.getElementById('duration');
+const songTitleDisplay = document.getElementById('song-title');
+const artistNameDisplay = document.getElementById('artist-name');
+const albumCoverDisplay = document.getElementById('album-cover');
+const addSongButton = document.getElementById('add-song-button');
+const songFormModal = document.getElementById('song-form-modal');
+const closeButton = document.getElementById('close-button');
+const songForm = document.getElementById('song-form');
+
+const songs = [
+    {
+        title: "About You",
+        artist: "The 1975",
+        albumCover: "album/about you.jpg",
+        file: "Music/About You.mp3"
+    },
+    {
+        title: "Runtuh",
+        artist: "Feby Putri,Fiersa Besari",
+        albumCover: "album/Runtuh.jpg",
+        file: "Music/Runtuh.mp3"
+    },
+    {
+        title: "BEAUTIFUL",
+        artist: "Paul Partohap",
+        albumCover: "album/BEAUTIFUL.jpg",
+        file: "Music/BEAUTIFUL.mp3"
+    },
+    {
+        title: "We can't be friends (wait for your love)",
+        artist: "Ariana Grande",
+        albumCover: "album/we cant be friends.jpg",
+        file: "Music/we cant be friends.mp3"
+    },
+    {
+        title: "Nanti Kita Seperti Ini",
+        artist: "Batas Senja",
+        albumCover: "album/nanti kita seperti ini.jpg",
+        file: "Music/nanti kita seperti ini.mp3"
+    },
+    {
+        title: "Magnetic",
+        artist: "ILLIIT",
+        albumCover: "album/magnetic.jpg",
+        file: "Music/magnetic.mp3"
+    },
+    {
+        title: "Line Without a Hook",
+        artist: "Ricky Montgomery",
+        albumCover: "album/line with a hook.jpg",
+        file: "Music/Line with a hook.mp3"
+    },
+    {
+        title: "The Box",
+        artist: "Roddy Ricch",
+        albumCover: "album/The box.jpg",
+        file: "Music/The box.mp3"
+    },
+    // Add more songs as needed
+];
+
+let currentSongIndex = 0;
+let audio = new Audio(songs[currentSongIndex].file);
+let isPlaying = false;
+let duration;
+let interval;
+
+function updateSongInfo() {
+    songTitleDisplay.textContent = songs[currentSongIndex].title;
+    artistNameDisplay.textContent = `Artis: ${songs[currentSongIndex].artist}`;
+    albumCoverDisplay.src = songs[currentSongIndex].albumCover;
+}
+
+audio.addEventListener('loadedmetadata', () => {
+    duration = audio.duration;
+    updateDurationDisplay();
+});
+
+audio.addEventListener('timeupdate', () => {
+    seekBar.value = (audio.currentTime / duration) * 100;
+    updateDurationDisplay();
+});
+
+playPauseButton.addEventListener('click', () => {
+    if (isPlaying) {
+        audio.pause();
+        playPauseButton.innerHTML = '<i class="fas fa-play"></i>';
+    } else {
+        audio.play();
+        playPauseButton.innerHTML = '<i class="fas fa-pause"></i>';
+    }
+    isPlaying = !isPlaying;
+});
+
+seekBar.addEventListener('input', () => {
+    audio.currentTime = (seekBar.value / 100) * duration;
+    updateDurationDisplay();
+});
+
+function playNextSong() {
+    currentSongIndex = (currentSongIndex + 1) % songs.length;
+    audio.src = songs[currentSongIndex].file;
+    updateSongInfo();
+    audio.play();
+    playPauseButton.innerHTML = '<i class="fas fa-pause"></i>';
+    isPlaying = true;
+}
+
+audio.addEventListener('ended', () => {
+    playNextSong();
+});
+
+nextButton.addEventListener('click', () => {
+    playNextSong();
+});
+
+prevButton.addEventListener('click', () => {
+    currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
+    audio.src = songs[currentSongIndex].file;
+    updateSongInfo();
+    audio.play();
+    playPauseButton.innerHTML = '<i class="fas fa-pause"></i>';
+    isPlaying = true;
+});
+
+function updateDurationDisplay() {
+    const minutes = Math.floor(audio.currentTime / 60);
+    const seconds = Math.floor(audio.currentTime % 60).toString().padStart(2, '0');
+    durationDisplay.textContent = `${minutes}:${seconds}`;
+}
+
+updateSongInfo();
+
+// Open the modal
+addSongButton.addEventListener('click', () => {
+    songFormModal.style.display = 'block';
+});
+
+// Close the modal
+closeButton.addEventListener('click', () => {
+    songFormModal.style.display = 'none';
+});
+
+// Close the modal when clicking outside of it
+window.addEventListener('click', (event) => {
+    if (event.target === songFormModal) {
+        songFormModal.style.display = 'none';
+    }
+});
+
+// Handle form submission
+songForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    
+    const title = document.getElementById('song-title-input').value;
+    const artist = document.getElementById('artist-name-input').value;
+    const albumCover = document.getElementById('album-cover-input').value;
+    const file = document.getElementById('file-input').value;
+    
+    const newSong = {
+        title,
+        artist,
+        albumCover,
+        files
+    };
+    
+    songs.push(newSong);
+    
+    songForm.reset();
+    songFormModal.style.display = 'none';
+});
+
+
+ini js

@@ -1,0 +1,129 @@
+body {
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden; /* Menyembunyikan overflow agar video tetap diatur dengan baik */
+}
+
+#background-video {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Menyesuaikan video agar mengisi seluruh area tanpa mengubah proporsi */
+    z-index: -1; /* Menempatkan video di belakang konten lain */
+}
+
+.player-container {
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.9); /* Ubah opacity (RGBA) untuk membuat latar belakang semi-transparan */
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 300px;
+    z-index: 1; /* Menempatkan konten pemutar di depan video */
+    position: relative; /* Menambahkan posisi relatif untuk mengatur z-index di atas video */
+}
+
+.album img {
+    width: 100%;
+    height: auto;
+    border-radius: 20px;
+    margin-bottom: 20px;
+}
+
+.controls {
+    text-align: center;
+}
+
+.song-info {
+    display: flex;
+    flex-direction: column; /* Mengubah menjadi kolom agar nama artis di bawah judul */
+    align-items: flex-start; /* Menempatkan ke kiri */
+    margin-bottom: 10px; /* Spasi antara judul dan nama artis */
+}
+
+.song-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px; /* Spasi antara judul dan nama artis */
+}
+
+.artist-name {
+    font-size: 14px;
+    color: #666;
+    margin-top: 5px; /* Spasi antara nama artis dan seek bar */
+}
+
+#seek-bar {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 10px;
+    border-radius: 5px;
+    background-color: #ddd;
+    outline: none;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+#seek-bar:hover {
+    opacity: 1;
+}
+
+#seek-bar::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #0e0e0e;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+#seek-bar::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #4caf50;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.duration-and-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+}
+
+#duration {
+    align-self: flex-start; /* Position the duration to the left */
+    margin-bottom: 10px; /* Spasi antara duration dan buttons */
+    font-size: 14px;
+    color: #666;
+}
+
+.buttons {
+    display: flex;
+    gap: 10px;
+}
+
+button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+button:hover {
+    transform: scale(1.1);
+    color: #4caf50;
+}
